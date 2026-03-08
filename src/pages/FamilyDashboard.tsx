@@ -6,7 +6,7 @@ import VibeMeter from '@/components/VibeMeter';
 import TrendBadge from '@/components/TrendBadge';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/hooks/useAuth';
-import { Plus, Link2, Users, ChevronRight, ClipboardCheck, X } from 'lucide-react';
+import { Plus, Users, ChevronRight, ClipboardCheck, X } from 'lucide-react';
 import { VibeZone } from '@/types/vibecheck';
 
 interface LinkedChild {
