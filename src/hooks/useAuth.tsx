@@ -36,6 +36,7 @@ export function useAuth() {
       setSession(s);
       setUser(s?.user ?? null);
       if (s?.user) {
+        setLoading(true);
         initialFetchDone.current = true;
         fetchProfile(s.user.id);
       } else {
