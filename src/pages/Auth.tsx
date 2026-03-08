@@ -46,7 +46,7 @@ export default function Auth() {
         const { data, error } = await supabase.auth.signInWithOAuth({
           provider: 'google',
           options: {
-            redirectTo: 'vibecheck://oauth-callback',
+            redirectTo: 'https://vibe-guardian-pulse.lovable.app',
             skipBrowserRedirect: true,
           },
         });
