@@ -15,8 +15,8 @@ export function useAndroidPermissions() {
 
   const check = useCallback(async () => {
     if (!isNative) {
-      // On web preview, treat as not granted so the page is visible for dev
-      setStatus(DEFAULT_STATUS);
+      // On web, skip permissions gate — grant all
+      setStatus({ accessibility: true, usageStats: true, notificationListener: true });
       setLoading(false);
       return;
     }
