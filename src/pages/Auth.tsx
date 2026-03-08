@@ -1,7 +1,8 @@
 import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { supabase } from '@/integrations/supabase/client';
-import { lovable } from '@/integrations/lovable/index';
+import { Capacitor } from '@capacitor/core';
+import { Browser } from '@capacitor/browser';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Shield, Mail, Lock, Eye, EyeOff } from 'lucide-react';
@@ -27,7 +28,6 @@ export default function Auth() {
       } else {
         const { error } = await supabase.auth.signInWithPassword({ email, password });
         if (error) throw error;
-        // Routing handled by App.tsx based on profile
       }
     } catch (err: any) {
       toast.error(err.message);
@@ -37,10 +37,35 @@ export default function Auth() {
   };
 
   const handleGoogleSignIn = async () => {
-    const { error } = await lovable.auth.signInWithOAuth('google', {
-      redirect_uri: window.location.origin,
-    });
-    if (error) toast.error(error.message);
+    if (Capacitor.isNativePlatform()) {
+      // On native Android, use supabase OAuth with in-app browser
+      const { data, error } = await supabase.auth.signInWithOAuth({
+        provider: 'google',
+        options: {
+          redirectTo: `${window.location.origin}`,
+          skipBrowserRedirect: true,
+        },
+      });
+      if (error) {
+        toast.error(error.message);
+        return;
+      }
+      if (data?.url) {
+        // Open OAuth URL in system browser
+        await Browser.open({ url: data.url });
+      }
+    } else {
+      // On web (Lovable preview), use the managed solution
+      try {
+        const { lovable } = await import('@/integrations/lovable/index');
+        const { error } = await lovable.auth.signInWithOAuth('google', {
+          redirect_uri: window.location.origin,
+        });
+        if (error) toast.error(error.message);
+      } catch {
+        toast.error('Google sign-in is not available in this environment');
+      }
+    }
   };
 
   return (
