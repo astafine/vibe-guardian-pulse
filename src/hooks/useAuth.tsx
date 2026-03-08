@@ -50,6 +50,7 @@ export function useAuth() {
         setUser(s?.user ?? null);
 
         if (s?.user) {
+          setLoading(true);
           if (initialFetchDone.current) {
             initialFetchDone.current = false;
             return;
