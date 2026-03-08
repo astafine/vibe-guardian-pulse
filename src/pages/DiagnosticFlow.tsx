@@ -121,7 +121,7 @@ function StepCard({ stepNum, title, subtitle, children }: { stepNum: number; tit
     >
       <div className="flex items-center gap-2 mb-2">
         <span className="w-7 h-7 rounded-full gradient-navy text-primary-foreground text-xs font-bold flex items-center justify-center">{stepNum}</span>
-        <span className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">Step {stepNum} of 3</span>
+        <span className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">Step {stepNum} of 2</span>
       </div>
       <h2 className="text-xl font-bold text-foreground">{title}</h2>
       <p className="text-sm text-muted-foreground mt-1">{subtitle}</p>
