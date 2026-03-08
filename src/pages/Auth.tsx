@@ -1,12 +1,14 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Capacitor } from '@capacitor/core';
-import { Browser } from '@capacitor/browser';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Shield, Mail, Lock, Eye, EyeOff } from 'lucide-react';
 import { toast } from 'sonner';
 import { supabase } from '@/integrations/supabase/client';
+
+// TODO: Replace with your actual Google Web Client ID from Google Cloud Console
+const GOOGLE_WEB_CLIENT_ID = 'YOUR_GOOGLE_WEB_CLIENT_ID';
 
 export default function Auth() {
   
@@ -38,22 +40,32 @@ export default function Auth() {
   const handleGoogleSignIn = async () => {
     setLoading(true);
     try {
-      const redirectTo = `${window.location.origin}/auth`;
-
       if (Capacitor.isNativePlatform()) {
-        const { data, error } = await supabase.auth.signInWithOAuth({
+        // Native: Use Capacitor Social Login for native Google sign-in (no browser bar)
+        const { SocialLogin } = await import('@capgo/capacitor-social-login');
+
+        await SocialLogin.initialize({
+          google: { webClientId: GOOGLE_WEB_CLIENT_ID },
+        });
+
+        const result = await SocialLogin.login({
           provider: 'google',
-          options: {
-            redirectTo,
-            skipBrowserRedirect: true,
-          },
+          options: {},
+        });
+
+        const idToken = (result as any)?.result?.idToken;
+        if (!idToken) throw new Error('No ID token returned from Google sign-in');
+
+        const { error } = await supabase.auth.signInWithIdToken({
+          provider: 'google',
+          token: idToken,
         });
 
         if (error) throw error;
-        if (!data?.url) throw new Error('No OAuth URL returned');
-
-        await Browser.open({ url: data.url, windowName: '_system' });
+        toast.success('Signed in successfully!');
       } else {
+        // Web: Use OAuth redirect flow
+        const redirectTo = `${window.location.origin}/auth`;
         const { data, error } = await supabase.auth.signInWithOAuth({
           provider: 'google',
           options: {
