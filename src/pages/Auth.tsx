@@ -1,12 +1,12 @@
 import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Capacitor } from '@capacitor/core';
+import { Browser } from '@capacitor/browser';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Shield, Mail, Lock, Eye, EyeOff } from 'lucide-react';
 import { toast } from 'sonner';
 import { supabase } from '@/integrations/supabase/client';
-import { lovable } from '@/integrations/lovable';
 
 export default function Auth() {
   
@@ -38,18 +38,41 @@ export default function Auth() {
   const handleGoogleSignIn = async () => {
     setLoading(true);
     try {
-      const redirect_uri = Capacitor.isNativePlatform()
-        ? 'https://vibe-guardian-pulse.lovable.app/auth'
-        : `${window.location.origin}/auth`;
+      const redirectTo = `${window.location.origin}/auth`;
 
-      const { error } = await lovable.auth.signInWithOAuth('google', {
-        redirect_uri,
-        extraParams: {
-          prompt: 'select_account',
-        },
-      });
+      if (Capacitor.isNativePlatform()) {
+        const { data, error } = await supabase.auth.signInWithOAuth({
+          provider: 'google',
+          options: {
+            redirectTo,
+            skipBrowserRedirect: true,
+          },
+        });
 
-      if (error) throw error;
+        if (error) throw error;
+        if (!data?.url) throw new Error('No OAuth URL returned');
+
+        await Browser.open({ url: data.url, windowName: '_system' });
+      } else {
+        const { data, error } = await supabase.auth.signInWithOAuth({
+          provider: 'google',
+          options: {
+            redirectTo,
+            skipBrowserRedirect: true,
+          },
+        });
+
+        if (error) throw error;
+        if (!data?.url) throw new Error('No OAuth URL returned');
+
+        const isEmbedded = window.self !== window.top;
+        if (isEmbedded) {
+          window.open(data.url, '_blank', 'noopener,noreferrer');
+          toast.info('Google sign-in opened in a new tab. Complete sign-in there.');
+        } else {
+          window.location.href = data.url;
+        }
+      }
     } catch (err: any) {
       console.error('[OAuth] Error:', err);
       toast.error(err?.message || 'Could not start Google sign-in');
