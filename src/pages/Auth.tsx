@@ -40,22 +40,32 @@ export default function Auth() {
   const handleGoogleSignIn = async () => {
     setLoading(true);
     try {
-      const redirectTo = `${window.location.origin}/auth`;
-
       if (Capacitor.isNativePlatform()) {
-        const { data, error } = await supabase.auth.signInWithOAuth({
+        // Native: Use Capacitor Social Login for native Google sign-in (no browser bar)
+        const { SocialLogin } = await import('@capgo/capacitor-social-login');
+
+        await SocialLogin.initialize({
+          google: { webClientId: GOOGLE_WEB_CLIENT_ID },
+        });
+
+        const result = await SocialLogin.login({
           provider: 'google',
-          options: {
-            redirectTo,
-            skipBrowserRedirect: true,
-          },
+          options: {},
+        });
+
+        const idToken = (result as any)?.result?.idToken;
+        if (!idToken) throw new Error('No ID token returned from Google sign-in');
+
+        const { error } = await supabase.auth.signInWithIdToken({
+          provider: 'google',
+          token: idToken,
         });
 
         if (error) throw error;
-        if (!data?.url) throw new Error('No OAuth URL returned');
-
-        await Browser.open({ url: data.url, windowName: '_system' });
+        toast.success('Signed in successfully!');
       } else {
+        // Web: Use OAuth redirect flow
+        const redirectTo = `${window.location.origin}/auth`;
         const { data, error } = await supabase.auth.signInWithOAuth({
           provider: 'google',
           options: {
