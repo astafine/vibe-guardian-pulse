@@ -92,6 +92,23 @@ export default function ChildProfile() {
       </motion.header>
 
       <div className="px-5 mt-6 space-y-5 relative z-10">
+        {/* Link Code for Parent */}
+        {profile?.link_code && (
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="bg-child-card rounded-2xl p-4 border border-child-border flex items-center justify-between"
+          >
+            <div>
+              <p className="text-xs text-child-muted">Your link code (share with parent)</p>
+              <p className="text-lg font-mono font-bold tracking-widest text-child-foreground mt-1">{profile.link_code}</p>
+            </div>
+            <button onClick={copyLinkCode} className="p-2 rounded-lg bg-child-accent/20 text-child-accent">
+              <Copy className="w-5 h-5" />
+            </button>
+          </motion.div>
+        )}
+
         {/* Daily Reflection Card */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
