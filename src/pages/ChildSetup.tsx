@@ -23,10 +23,10 @@ export default function ChildSetup() {
               </div>
               <h2 className="text-2xl font-extrabold text-foreground">Privacy Seal</h2>
               <p className="text-sm text-muted-foreground mt-3 max-w-[300px] leading-relaxed">
-                Vibecheck respects your child's privacy. We monitor emotional wellness patterns — never messages, photos, or private content.
+                VibeCheck respects your child's privacy.
               </p>
               <div className="mt-8 space-y-3 w-full">
-                {['No message reading', 'No location tracking', 'No social media access', 'Encrypted & anonymous'].map((item, i) => (
+                {['End-to-end encryption', 'Safety-first', 'Trusted by 500+ early-adopter families', 'DPDP Compliant'].map((item, i) => (
                   <motion.div
                     key={item}
                     initial={{ opacity: 0, y: 10 }}
@@ -48,7 +48,7 @@ export default function ChildSetup() {
           {step === 'pairing' && (
             <motion.div key="pairing" initial={{ opacity: 0, x: 30 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -30 }} className="flex flex-col items-center text-center">
               <h2 className="text-xl font-bold text-foreground">Scan to Pair</h2>
-              <p className="text-sm text-muted-foreground mt-2">Open the Vibecheck app on your child's device and scan this code.</p>
+              <p className="text-sm text-muted-foreground mt-2">Open the VibeCheck app on your child's device and scan this code.</p>
               <div className="mt-8 glass-card-elevated rounded-3xl p-8">
                 <div className="w-48 h-48 rounded-xl bg-foreground/5 flex items-center justify-center">
                   <QrCode className="w-32 h-32 text-primary" />
@@ -79,7 +79,7 @@ export default function ChildSetup() {
                 <Bell className="w-5 h-5 text-mint-dark" />
                 <div className="text-left">
                   <p className="text-xs font-bold text-foreground">Persistent Notification</p>
-                  <p className="text-xs text-muted-foreground">"Vibecheck is protecting your well-being."</p>
+                  <p className="text-xs text-muted-foreground">"VibeCheck is protecting your well-being."</p>
                 </div>
               </div>
               <button onClick={() => navigate('/')} className="mt-8 w-full gradient-navy text-primary-foreground font-bold py-3.5 rounded-xl">

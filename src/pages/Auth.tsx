@@ -55,7 +55,7 @@ export default function Auth() {
           <div className="w-20 h-20 rounded-2xl gradient-navy flex items-center justify-center mx-auto shadow-lg">
             <Shield className="w-9 h-9 text-primary-foreground" />
           </div>
-          <h1 className="text-3xl font-extrabold text-foreground">Vibecheck</h1>
+          <h1 className="text-3xl font-extrabold text-foreground">VibeCheck</h1>
           <p className="text-sm text-muted-foreground">Your family's emotional wellness</p>
         </div>
 
