@@ -8,6 +8,13 @@
   "plugins": {
     "App": {
       "launchAutoHide": true
+    },
+    "SocialLogin": {
+      "providers": {
+        "google": true,
+        "apple": false,
+        "facebook": false
+      }
     }
   }
 }
