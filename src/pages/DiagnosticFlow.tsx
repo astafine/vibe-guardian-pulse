@@ -5,14 +5,14 @@ import AppHeader from '@/components/AppHeader';
 import { physicalOptions, stressorOptions } from '@/data/mockData';
 import { Activity } from 'lucide-react';
 
-type Step = 'physical' | 'stressors' | 'processing';
+type Step = 'observations' | 'processing';
 
 export default function DiagnosticFlow() {
   const navigate = useNavigate();
   const { childId } = useParams();
   const location = useLocation();
   const child = location.state?.child;
-  const [step, setStep] = useState<Step>('physical');
+  const [step, setStep] = useState<Step>('observations');
   const [physical, setPhysical] = useState<string[]>([]);
   const [stressors, setStressors] = useState<string[]>([]);
 
@@ -20,49 +20,60 @@ export default function DiagnosticFlow() {
     setter(list.includes(value) ? list.filter(v => v !== value) : [...list, value]);
   };
 
-  const handleNext = () => {
-    if (step === 'physical') setStep('stressors');
-    else if (step === 'stressors') {
-      setStep('processing');
-      setTimeout(() => navigate(`/action-plan/${childId}`, { state: { child, physical, stressors } }), 3000);
-    }
+  const handleSubmit = () => {
+    setStep('processing');
+    setTimeout(() => navigate(`/action-plan/${childId}`, { state: { child, physical, stressors } }), 3000);
   };
 
   return (
     <div className="min-h-screen pb-8">
       <AppHeader
-        title="Insight Interview"
-        subtitle={child?.name ? `Understanding ${child.name}'s vibes` : 'Understanding vibes'}
+        title="Real-World Observations"
+        subtitle={child?.first_name ? `Understanding ${child.first_name}'s signals` : 'Understanding signals'}
         showBack
         onBack={() => navigate(-1)}
       />
 
       <div className="px-5 mt-6">
         <AnimatePresence mode="wait">
-          {step === 'physical' && (
-            <StepCard key="physical" stepNum={1} title="What are you seeing at home?" subtitle="Select all that apply">
-              <div className="flex flex-wrap gap-2 mt-4">
-                {physicalOptions.map(opt => (
-                  <Chip key={opt} label={opt} selected={physical.includes(opt)} onToggle={() => toggleChip(opt, physical, setPhysical)} />
-                ))}
+          {step === 'observations' && (
+            <motion.div
+              key="observations"
+              initial={{ opacity: 0, x: 30 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: -30 }}
+              transition={{ duration: 0.3 }}
+            >
+              {/* Physical signs */}
+              <div className="mb-6">
+                <h2 className="text-xl font-bold text-foreground">What are you seeing at home?</h2>
+                <p className="text-sm text-muted-foreground mt-1">Select all that apply</p>
+                <div className="flex flex-wrap gap-2 mt-4">
+                  {physicalOptions.map(opt => (
+                    <Chip key={opt} label={opt} selected={physical.includes(opt)} onToggle={() => toggleChip(opt, physical, setPhysical)} />
+                  ))}
+                </div>
               </div>
-              <button onClick={handleNext} disabled={physical.length === 0} className="mt-6 w-full gradient-navy text-primary-foreground font-bold py-3.5 rounded-xl disabled:opacity-40 transition-opacity">
-                Continue
-              </button>
-            </StepCard>
-          )}
 
-          {step === 'stressors' && (
-            <StepCard key="stressors" stepNum={2} title="Any known stressors?" subtitle="Select all that apply">
-              <div className="flex flex-wrap gap-2 mt-4">
-                {stressorOptions.map(opt => (
-                  <Chip key={opt} label={opt} selected={stressors.includes(opt)} onToggle={() => toggleChip(opt, stressors, setStressors)} />
-                ))}
+              {/* Stressors */}
+              <div className="mb-6">
+                <h2 className="text-xl font-bold text-foreground">Any known stressors?</h2>
+                <p className="text-sm text-muted-foreground mt-1">Select all that apply</p>
+                <div className="flex flex-wrap gap-2 mt-4">
+                  {stressorOptions.map(opt => (
+                    <Chip key={opt} label={opt} selected={stressors.includes(opt)} onToggle={() => toggleChip(opt, stressors, setStressors)} />
+                  ))}
+                </div>
               </div>
-              <button onClick={handleNext} disabled={stressors.length === 0} className="mt-6 w-full gradient-navy text-primary-foreground font-bold py-3.5 rounded-xl disabled:opacity-40 transition-opacity">
-                Analyze Vibes
+
+              <button
+                onClick={handleSubmit}
+                disabled={physical.length === 0 && stressors.length === 0}
+                className="w-full gradient-navy text-primary-foreground font-bold py-3.5 rounded-xl disabled:opacity-40 transition-opacity"
+              >
+                Analyze Observations
               </button>
-            </StepCard>
+            </motion.div>
           )}
 
           {step === 'processing' && (
@@ -73,7 +84,6 @@ export default function DiagnosticFlow() {
               exit={{ opacity: 0 }}
               className="flex flex-col items-center justify-center py-20"
             >
-              {/* Pulse animation */}
               <div className="relative w-32 h-32 flex items-center justify-center">
                 <motion.div
                   className="absolute inset-0 rounded-full bg-mint/30"
@@ -92,7 +102,6 @@ export default function DiagnosticFlow() {
               <p className="mt-8 text-center text-sm font-medium text-muted-foreground max-w-[260px] leading-relaxed">
                 Cross-referencing digital vibes with physical observations...
               </p>
-              {/* Animated dots */}
               <div className="flex gap-1.5 mt-4">
                 {[0, 1, 2].map(i => (
                   <motion.div
@@ -108,25 +117,6 @@ export default function DiagnosticFlow() {
         </AnimatePresence>
       </div>
     </div>
-  );
-}
-
-function StepCard({ stepNum, title, subtitle, children }: { stepNum: number; title: string; subtitle: string; children: React.ReactNode }) {
-  return (
-    <motion.div
-      initial={{ opacity: 0, x: 30 }}
-      animate={{ opacity: 1, x: 0 }}
-      exit={{ opacity: 0, x: -30 }}
-      transition={{ duration: 0.3 }}
-    >
-      <div className="flex items-center gap-2 mb-2">
-        <span className="w-7 h-7 rounded-full gradient-navy text-primary-foreground text-xs font-bold flex items-center justify-center">{stepNum}</span>
-        <span className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">Step {stepNum} of 2</span>
-      </div>
-      <h2 className="text-xl font-bold text-foreground">{title}</h2>
-      <p className="text-sm text-muted-foreground mt-1">{subtitle}</p>
-      {children}
-    </motion.div>
   );
 }
 

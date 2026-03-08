@@ -210,12 +210,9 @@ export default function FamilyDashboard() {
                           className="mt-4 w-full flex items-center justify-center gap-2 py-3 rounded-xl border border-primary/30 text-primary font-semibold text-sm hover:bg-primary/5 transition-colors"
                         >
                           <ClipboardCheck className="w-4 h-4" />
-                          <span>Run Insight Interview</span>
+                          <span>Verify Physical Signs</span>
                           <ChevronRight className="w-4 h-4" />
                         </button>
-                        <p className="text-[11px] text-muted-foreground text-center mt-1.5">
-                          Optional: cross-check physical signals vs online activity
-                        </p>
                       </div>
                     </motion.div>
                   )}
