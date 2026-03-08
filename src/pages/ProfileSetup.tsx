@@ -7,7 +7,7 @@ import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { toast } from 'sonner';
-import { User, GraduationCap, Calendar, Users } from 'lucide-react';
+import { User, GraduationCap, Calendar, Users, LogOut } from 'lucide-react';
 
 export default function ProfileSetup() {
   const navigate = useNavigate();
@@ -67,7 +67,13 @@ export default function ProfileSetup() {
   };
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center px-6 bg-background">
+    <div className="min-h-screen flex flex-col items-center justify-center px-6 bg-background relative">
+      <button
+        onClick={async () => { await supabase.auth.signOut(); window.location.href = '/'; }}
+        className="absolute top-6 right-6 flex items-center gap-1.5 text-sm text-muted-foreground hover:text-destructive transition-colors"
+      >
+        <LogOut className="w-4 h-4" /> Sign Out
+      </button>
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
