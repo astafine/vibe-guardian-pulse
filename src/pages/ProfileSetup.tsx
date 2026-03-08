@@ -7,7 +7,7 @@ import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { toast } from 'sonner';
-import { User, GraduationCap, Calendar, Users } from 'lucide-react';
+import { User, GraduationCap, Calendar, Users, LogOut } from 'lucide-react';
 
 export default function ProfileSetup() {
   const navigate = useNavigate();
