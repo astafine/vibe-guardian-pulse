@@ -72,6 +72,17 @@ export default {
           DEFAULT: "hsl(var(--success))",
           foreground: "hsl(var(--success-foreground))",
         },
+        child: {
+          bg: "hsl(var(--child-bg))",
+          foreground: "hsl(var(--child-foreground))",
+          card: "hsl(var(--child-card))",
+          border: "hsl(var(--child-border))",
+          muted: "hsl(var(--child-muted))",
+          accent: "hsl(var(--child-accent))",
+          teal: "hsl(var(--child-teal))",
+          purple: "hsl(var(--child-purple))",
+          star: "hsl(var(--child-star))",
+        },
       },
       borderRadius: {
         lg: "var(--radius)",

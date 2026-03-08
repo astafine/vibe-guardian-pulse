@@ -11,6 +11,7 @@ import ChildSetup from "./pages/ChildSetup";
 import Trends from "./pages/Trends";
 import ExpertLibrary from "./pages/ExpertLibrary";
 import AppSettings from "./pages/AppSettings";
+import ChildProfile from "./pages/ChildProfile";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -30,6 +31,7 @@ const App = () => (
             <Route path="/trends" element={<Trends />} />
             <Route path="/library" element={<ExpertLibrary />} />
             <Route path="/settings" element={<AppSettings />} />
+            <Route path="/child-profile" element={<ChildProfile />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
           <BottomNav />
