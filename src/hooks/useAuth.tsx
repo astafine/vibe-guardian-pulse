@@ -32,7 +32,21 @@ export function useAuth() {
   }, []);
 
   useEffect(() => {
-    supabase.auth.getSession().then(({ data: { session: s } }) => {
+    const INSTALL_MARKER = 'vibecheck_installed';
+
+    const init = async () => {
+      // If no install marker, treat as fresh install → clear session
+      if (!localStorage.getItem(INSTALL_MARKER)) {
+        localStorage.setItem(INSTALL_MARKER, 'true');
+        await supabase.auth.signOut();
+        setUser(null);
+        setSession(null);
+        setProfile(null);
+        setLoading(false);
+        return;
+      }
+
+      const { data: { session: s } } = await supabase.auth.getSession();
       setSession(s);
       setUser(s?.user ?? null);
       if (s?.user) {
@@ -42,7 +56,9 @@ export function useAuth() {
       } else {
         setLoading(false);
       }
-    });
+    };
+
+    init();
 
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
       (_event, s) => {
