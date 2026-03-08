@@ -148,17 +148,6 @@ export default function ChildProfile() {
             </div>
           </button>
 
-          {/* Talk to Counselor */}
-          <button className="w-full bg-child-card rounded-2xl p-4 border border-child-border flex items-center gap-4 text-left hover:border-child-accent/40 transition-colors">
-            <div className="w-11 h-11 rounded-xl bg-child-teal/20 flex items-center justify-center shrink-0">
-              <MessageCircle className="w-5 h-5 text-child-teal" />
-            </div>
-            <div>
-              <p className="font-semibold text-sm text-child-foreground">Talk to Counselor</p>
-              <p className="text-xs text-child-muted mt-0.5">Quick link to school support</p>
-            </div>
-          </button>
-
           <AnimatePresence>
             {activePanel === 'nudge' && (
               <motion.div
@@ -198,6 +187,17 @@ export default function ChildProfile() {
               </motion.div>
             )}
           </AnimatePresence>
+
+          {/* Talk to Counselor */}
+          <button className="w-full bg-child-card rounded-2xl p-4 border border-child-border flex items-center gap-4 text-left hover:border-child-accent/40 transition-colors">
+            <div className="w-11 h-11 rounded-xl bg-child-teal/20 flex items-center justify-center shrink-0">
+              <MessageCircle className="w-5 h-5 text-child-teal" />
+            </div>
+            <div>
+              <p className="font-semibold text-sm text-child-foreground">Talk to Counselor</p>
+              <p className="text-xs text-child-muted mt-0.5">Quick link to school support</p>
+            </div>
+          </button>
 
           {/* The Toolkit */}
           <button
