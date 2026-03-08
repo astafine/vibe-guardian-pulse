@@ -70,6 +70,7 @@ function AppRoutes() {
     <>
       <Routes>
         <Route path="/" element={<FamilyDashboard />} />
+        <Route path="/auth" element={<Navigate to="/" replace />} />
         <Route path="/diagnostic/:childId" element={<DiagnosticFlow />} />
         <Route path="/action-plan/:childId" element={<ActionPlan />} />
         <Route path="/setup" element={<ChildSetup />} />
