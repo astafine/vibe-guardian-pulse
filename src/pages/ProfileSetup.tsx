@@ -108,14 +108,18 @@ export default function ProfileSetup() {
 
           <div className="space-y-2">
             <Label className="text-xs font-semibold">Sex</Label>
-            <RadioGroup value={sex} onValueChange={setSex} className="flex gap-3">
+            <div className="flex gap-3">
               {['male', 'female', 'other'].map((s) => (
-                <label key={s} className={`flex-1 glass-card rounded-xl p-3 text-center cursor-pointer transition-all ${sex === s ? 'ring-2 ring-primary' : ''}`}>
-                  <RadioGroupItem value={s} className="sr-only" />
+                <button
+                  type="button"
+                  key={s}
+                  onClick={() => setSex(s)}
+                  className={`flex-1 glass-card rounded-xl p-3 text-center cursor-pointer transition-all ${sex === s ? 'ring-2 ring-primary' : ''}`}
+                >
                   <span className="text-sm font-medium capitalize text-foreground">{s}</span>
-                </label>
+                </button>
               ))}
-            </RadioGroup>
+            </div>
           </div>
 
           <div className="space-y-2">
