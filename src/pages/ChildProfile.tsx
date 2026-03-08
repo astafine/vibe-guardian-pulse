@@ -1,6 +1,8 @@
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { MessageCircle, Heart, Sparkles, Shield, X } from 'lucide-react';
+import { MessageCircle, Heart, Sparkles, Shield, X, Copy } from 'lucide-react';
+import { useAuth } from '@/hooks/useAuth';
+import { toast } from 'sonner';
 
 const emojis = [
   { icon: '😊', label: 'Great' },
