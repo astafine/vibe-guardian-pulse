@@ -24,6 +24,21 @@
 
   <body>
     <div id="root"></div>
+    <!-- Native OAuth handoff: if this page loads in a mobile browser with OAuth tokens, redirect to the native app -->
+    <script>
+      (function() {
+        var hash = window.location.hash;
+        if (hash && hash.indexOf('access_token=') !== -1) {
+          // Check if we're on the published domain (not inside Capacitor webview)
+          var isPublishedSite = window.location.hostname === 'vibe-guardian-pulse.lovable.app';
+          var isInsideCapacitor = window.Capacitor && window.Capacitor.isNativePlatform && window.Capacitor.isNativePlatform();
+          if (isPublishedSite && !isInsideCapacitor) {
+            // Redirect to native app with tokens
+            window.location.href = 'vibecheck://oauth-callback' + hash;
+          }
+        }
+      })();
+    </script>
     <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>
