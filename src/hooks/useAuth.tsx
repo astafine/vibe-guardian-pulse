@@ -1,4 +1,4 @@
-import { useEffect, useState, useRef } from 'react';
+import { useEffect, useState, useRef, useCallback } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import type { User, Session } from '@supabase/supabase-js';
 
@@ -19,9 +19,9 @@ export function useAuth() {
   const [session, setSession] = useState<Session | null>(null);
   const [profile, setProfile] = useState<UserProfile | null>(null);
   const [loading, setLoading] = useState(true);
-  const profileFetchRef = useRef(false);
+  const initialFetchDone = useRef(false);
 
-  const fetchProfile = async (userId: string) => {
+  const fetchProfile = useCallback(async (userId: string) => {
     const { data } = await supabase
       .from('profiles')
       .select('*')
@@ -29,34 +29,31 @@ export function useAuth() {
       .maybeSingle();
     setProfile(data as UserProfile | null);
     setLoading(false);
-  };
+  }, []);
 
   useEffect(() => {
-    // First get the existing session
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      setSession(session);
-      setUser(session?.user ?? null);
-      if (session?.user) {
-        profileFetchRef.current = true;
-        fetchProfile(session.user.id);
+    supabase.auth.getSession().then(({ data: { session: s } }) => {
+      setSession(s);
+      setUser(s?.user ?? null);
+      if (s?.user) {
+        initialFetchDone.current = true;
+        fetchProfile(s.user.id);
       } else {
         setLoading(false);
       }
     });
 
-    // Then listen for auth changes
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
-      async (_event, session) => {
-        setSession(session);
-        setUser(session?.user ?? null);
+      (_event, s) => {
+        setSession(s);
+        setUser(s?.user ?? null);
 
-        if (session?.user) {
-          // Skip if getSession already triggered this fetch
-          if (profileFetchRef.current) {
-            profileFetchRef.current = false;
+        if (s?.user) {
+          if (initialFetchDone.current) {
+            initialFetchDone.current = false;
             return;
           }
-          await fetchProfile(session.user.id);
+          fetchProfile(s.user.id);
         } else {
           setProfile(null);
           setLoading(false);
@@ -65,14 +62,14 @@ export function useAuth() {
     );
 
     return () => subscription.unsubscribe();
-  }, []);
+  }, [fetchProfile]);
 
-  const signOut = async () => {
+  const signOut = useCallback(async () => {
     await supabase.auth.signOut();
     setUser(null);
     setProfile(null);
     setSession(null);
-  };
+  }, []);
 
   return { user, session, profile, loading, signOut };
 }
