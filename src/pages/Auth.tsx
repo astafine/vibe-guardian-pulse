@@ -63,11 +63,11 @@ export default function Auth() {
           throw new Error('No OAuth URL returned');
         }
       } else {
-        // Web (Lovable preview): use managed OAuth
-        const { lovable } = await import('@/integrations/lovable/index');
-        const cleanOrigin = `${window.location.protocol}//${window.location.host}`;
-        const { error } = await lovable.auth.signInWithOAuth('google', {
-          redirect_uri: cleanOrigin,
+        // Web preview: use full-page redirect flow to avoid Firefox COOP popup issues
+        const redirectTo = `${window.location.protocol}//${window.location.host}/auth`;
+        const { error } = await supabase.auth.signInWithOAuth({
+          provider: 'google',
+          options: { redirectTo },
         });
         if (error) throw error;
       }
