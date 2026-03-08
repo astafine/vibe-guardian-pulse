@@ -19,20 +19,23 @@ export function useOAuthCallback() {
 
     const handleUrlOpen = async (event: URLOpenListenerEvent) => {
       console.log('[OAuthCallback] Received URL:', event.url);
-      toast.info('Received OAuth callback...');
 
       try {
         const url = new URL(event.url);
         
-        // Check for auth callback patterns
+        // Extract tokens from query params, hash fragment, or fragment as query params
+        // Supabase may return tokens in different formats depending on the flow
+        const hashParams = new URLSearchParams(
+          url.hash.startsWith('#') ? url.hash.substring(1) : ''
+        );
+        
         const accessToken = url.searchParams.get('access_token') || 
-                           url.hash.match(/access_token=([^&]*)/)?.[1];
+                           hashParams.get('access_token');
         const refreshToken = url.searchParams.get('refresh_token') ||
-                            url.hash.match(/refresh_token=([^&]*)/)?.[1];
+                            hashParams.get('refresh_token');
 
         if (accessToken) {
           console.log('[OAuthCallback] Found access token, setting session...');
-          toast.info('Setting session...');
 
           const { error } = await supabase.auth.setSession({
             access_token: accessToken,
@@ -45,14 +48,14 @@ export function useOAuthCallback() {
           } else {
             console.log('[OAuthCallback] Session set successfully!');
             toast.success('Signed in successfully!');
+            // Close the browser that was opened for OAuth
+            try {
+              const { Browser } = await import('@capacitor/browser');
+              await Browser.close();
+            } catch (_) {}
           }
         } else {
-          console.log('[OAuthCallback] No access_token found in URL');
-          
-          // Try extracting from hash fragment (common OAuth pattern)
-          if (url.hash) {
-            console.log('[OAuthCallback] Hash fragment:', url.hash);
-          }
+          console.log('[OAuthCallback] No access_token found in URL, params:', url.search, 'hash:', url.hash);
         }
       } catch (err: any) {
         console.error('[OAuthCallback] Error processing callback:', err);

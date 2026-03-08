@@ -46,7 +46,7 @@ export default function Auth() {
         const { data, error } = await supabase.auth.signInWithOAuth({
           provider: 'google',
           options: {
-            redirectTo: 'https://cb70405b-b9cf-47f6-aac5-4784c26796c4.lovableproject.com',
+            redirectTo: 'vibecheck://oauth-callback',
             skipBrowserRedirect: true,
           },
         });
