@@ -95,5 +95,15 @@ export const mockActionPlan: ActionPlan = {
       title: 'Teacher Check-in',
       description: 'Send a brief, non-alarming email to their homeroom teacher asking about social dynamics.',
     },
+    {
+      icon: '🧑‍⚕️',
+      title: 'Counselor Check-in',
+      description: 'Schedule a session with your child\'s school counselor to discuss recent behavioral patterns and get professional guidance.',
+    },
+    {
+      icon: '🧠',
+      title: 'Talk to a Psychologist',
+      description: 'Connect with a licensed child psychologist for expert strategies on supporting your child\'s emotional wellbeing.',
+    },
   ],
 };
