@@ -231,7 +231,10 @@ export default function ChildProfile() {
           </AnimatePresence>
 
           {/* Talk to Counselor */}
-          <button className="w-full bg-child-card rounded-2xl p-4 border border-child-border flex items-center gap-4 text-left hover:border-child-accent/40 transition-colors">
+          <button
+            onClick={() => setActivePanel(activePanel === 'counselor' ? null : 'counselor')}
+            className="w-full bg-child-card rounded-2xl p-4 border border-child-border flex items-center gap-4 text-left hover:border-child-accent/40 transition-colors"
+          >
             <div className="w-11 h-11 rounded-xl bg-child-teal/20 flex items-center justify-center shrink-0">
               <MessageCircle className="w-5 h-5 text-child-teal" />
             </div>
@@ -240,6 +243,41 @@ export default function ChildProfile() {
               <p className="text-xs text-child-muted mt-0.5">Quick link to school support</p>
             </div>
           </button>
+
+          <AnimatePresence>
+            {activePanel === 'counselor' && (
+              <motion.div
+                initial={{ height: 0, opacity: 0 }}
+                animate={{ height: 'auto', opacity: 1 }}
+                exit={{ height: 0, opacity: 0 }}
+                className="overflow-hidden"
+              >
+                <div className="bg-child-card rounded-2xl p-4 border border-child-border space-y-2">
+                  <div className="flex items-center justify-between mb-1">
+                    <p className="text-xs text-child-muted font-medium">School Counselors</p>
+                    <button onClick={() => setActivePanel(null)} className="text-child-muted hover:text-child-foreground">
+                      <X className="w-4 h-4" />
+                    </button>
+                  </div>
+                  {counselors.map((c) => (
+                    <div
+                      key={c.name}
+                      className="w-full p-3 rounded-xl bg-child-bg/60 flex items-center gap-3"
+                    >
+                      <span className="text-xl">{c.emoji}</span>
+                      <div className="flex-1 min-w-0">
+                        <p className="text-sm font-medium text-child-foreground">{c.name}</p>
+                        <p className="text-[11px] text-child-muted">{c.role}</p>
+                      </div>
+                      <button className="px-3 py-1.5 rounded-lg bg-child-teal/20 text-child-teal text-xs font-medium hover:bg-child-teal/30 transition-colors">
+                        Contact
+                      </button>
+                    </div>
+                  ))}
+                </div>
+              </motion.div>
+            )}
+          </AnimatePresence>
 
           {/* The Toolkit */}
           <button
