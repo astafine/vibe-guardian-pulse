@@ -103,7 +103,7 @@ export const mockActionPlan: ActionPlan = {
     {
       icon: '🧠',
       title: 'Talk to a Psychologist',
-      description: 'Connect with a licensed child psychologist for expert strategies on supporting your child\'s emotional wellbeing.',
+      description: 'Connect with a licensed psychologist for expert parenting strategies on supporting your child\'s emotional wellbeing.',
     },
   ],
 };
