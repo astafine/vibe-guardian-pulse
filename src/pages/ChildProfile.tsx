@@ -1,7 +1,8 @@
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { MessageCircle, Heart, Sparkles, Shield, X, Copy } from 'lucide-react';
+import { MessageCircle, Heart, Sparkles, Shield, X, Copy, LogOut } from 'lucide-react';
 import { useAuth } from '@/hooks/useAuth';
+import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
 
 const emojis = [
