@@ -34,15 +34,29 @@ export default function Auth() {
   };
 
   const handleGoogleSignIn = async () => {
+    console.log('[OAuth] Button clicked, starting Google sign-in...');
+    toast.info('Starting Google sign-in...');
     setLoading(true);
     try {
+      console.log('[OAuth] Importing lovable auth module...');
       const { lovable } = await import('@/integrations/lovable/index');
+      console.log('[OAuth] Calling signInWithOAuth...');
+      toast.info('Calling OAuth...');
+      
       const { error } = await lovable.auth.signInWithOAuth('google', {
         redirect_uri: window.location.origin,
       });
 
-      if (error) throw error;
+      console.log('[OAuth] signInWithOAuth returned:', error ? `Error: ${error.message}` : 'Success/Redirect');
+      
+      if (error) {
+        toast.error(`OAuth error: ${error.message}`);
+        throw error;
+      }
+      
+      toast.success('OAuth initiated successfully');
     } catch (err: any) {
+      console.error('[OAuth] Caught error:', err);
       toast.error(err?.message || 'Could not start Google sign-in');
     } finally {
       setLoading(false);

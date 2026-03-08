@@ -5,6 +5,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
 import { useAndroidPermissions } from "@/hooks/useAndroidPermissions";
+import { useOAuthCallback } from "@/hooks/useOAuthCallback";
 import BottomNav from "./components/BottomNav";
 import FamilyDashboard from "./pages/FamilyDashboard";
 import DiagnosticFlow from "./pages/DiagnosticFlow";
@@ -25,6 +26,7 @@ const queryClient = new QueryClient();
 function AppRoutes() {
   const { user, profile, loading } = useAuth();
   const { allGranted, loading: permLoading } = useAndroidPermissions();
+  useOAuthCallback();
 
   if (loading) {
     return (
