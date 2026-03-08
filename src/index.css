@@ -54,6 +54,17 @@
     --glass-bg: 0 0% 100% / 0.6;
     --glass-border: 0 0% 100% / 0.3;
     --glass-shadow: 232 65% 15% / 0.08;
+
+    /* Child Profile dark theme */
+    --child-bg: 263 40% 10%;
+    --child-foreground: 260 20% 92%;
+    --child-card: 263 30% 16%;
+    --child-border: 263 25% 22%;
+    --child-muted: 260 15% 55%;
+    --child-accent: 263 60% 55%;
+    --child-teal: 184 100% 19%;
+    --child-purple: 263 60% 55%;
+    --child-star: 45 80% 70%;
   }
 }
 

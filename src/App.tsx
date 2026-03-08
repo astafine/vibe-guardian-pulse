@@ -11,6 +11,7 @@ import ChildSetup from "./pages/ChildSetup";
 import Trends from "./pages/Trends";
 import ExpertLibrary from "./pages/ExpertLibrary";
 import AppSettings from "./pages/AppSettings";
+import ChildProfile from "./pages/ChildProfile";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
