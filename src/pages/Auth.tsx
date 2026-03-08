@@ -37,34 +37,56 @@ export default function Auth() {
   };
 
   const handleGoogleSignIn = async () => {
-    if (Capacitor.isNativePlatform()) {
-      // On native Android, use supabase OAuth with in-app browser
-      const { data, error } = await supabase.auth.signInWithOAuth({
-        provider: 'google',
-        options: {
-          redirectTo: `${window.location.origin}`,
-          skipBrowserRedirect: true,
-        },
-      });
-      if (error) {
-        toast.error(error.message);
-        return;
-      }
-      if (data?.url) {
-        // Open OAuth URL in system browser
-        await Browser.open({ url: data.url });
-      }
-    } else {
-      // On web (Lovable preview), use the managed solution
-      try {
-        const { lovable } = await import('@/integrations/lovable/index');
-        const { error } = await lovable.auth.signInWithOAuth('google', {
-          redirect_uri: window.location.origin,
+    setLoading(true);
+    try {
+      if (Capacitor.isNativePlatform()) {
+        // Native Android: first try system-browser OAuth URL flow
+        const { data, error } = await supabase.auth.signInWithOAuth({
+          provider: 'google',
+          options: {
+            redirectTo: `${window.location.origin}`,
+            skipBrowserRedirect: true,
+          },
         });
-        if (error) toast.error(error.message);
-      } catch {
-        toast.error('Google sign-in is not available in this environment');
+
+        if (error) throw error;
+
+        if (data?.url) {
+          try {
+            await Browser.open({ url: data.url });
+            return;
+          } catch {
+            // Fallback: force redirect in webview if Browser plugin fails
+            window.location.href = data.url;
+            return;
+          }
+        }
+
+        // Secondary fallback: direct redirect mode
+        const { error: redirectError } = await supabase.auth.signInWithOAuth({
+          provider: 'google',
+          options: {
+            redirectTo: `${window.location.origin}`,
+          },
+        });
+
+        if (redirectError) throw redirectError;
+      } else {
+        // Web (Lovable preview): managed OAuth
+        try {
+          const { lovable } = await import('@/integrations/lovable/index');
+          const { error } = await lovable.auth.signInWithOAuth('google', {
+            redirect_uri: window.location.origin,
+          });
+          if (error) throw error;
+        } catch {
+          toast.error('Google sign-in is not available in this environment');
+        }
       }
+    } catch (err: any) {
+      toast.error(err?.message || 'Could not start Google sign-in');
+    } finally {
+      setLoading(false);
     }
   };
 
