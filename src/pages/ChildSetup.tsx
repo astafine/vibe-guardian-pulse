@@ -48,7 +48,7 @@ export default function ChildSetup() {
           {step === 'pairing' && (
             <motion.div key="pairing" initial={{ opacity: 0, x: 30 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -30 }} className="flex flex-col items-center text-center">
               <h2 className="text-xl font-bold text-foreground">Scan to Pair</h2>
-              <p className="text-sm text-muted-foreground mt-2">Open the Vibecheck app on your child's device and scan this code.</p>
+              <p className="text-sm text-muted-foreground mt-2">Open the VibeCheck app on your child's device and scan this code.</p>
               <div className="mt-8 glass-card-elevated rounded-3xl p-8">
                 <div className="w-48 h-48 rounded-xl bg-foreground/5 flex items-center justify-center">
                   <QrCode className="w-32 h-32 text-primary" />
