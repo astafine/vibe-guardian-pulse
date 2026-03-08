@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { supabase } from '@/integrations/supabase/client';
@@ -18,6 +18,21 @@ export default function ProfileSetup() {
   const [role, setRole] = useState<'parent' | 'child' | ''>('');
   const [schoolName, setSchoolName] = useState('');
   const [loading, setLoading] = useState(false);
+
+  // Pre-fill from Google OAuth metadata
+  useEffect(() => {
+    supabase.auth.getUser().then(({ data: { user } }) => {
+      if (!user) return;
+      const meta = user.user_metadata;
+      if (meta?.full_name) {
+        const parts = meta.full_name.split(' ');
+        setFirstName((prev) => prev || parts[0] || '');
+        setLastName((prev) => prev || parts.slice(1).join(' ') || '');
+      }
+      if (meta?.first_name) setFirstName((prev) => prev || meta.first_name);
+      if (meta?.last_name) setLastName((prev) => prev || meta.last_name);
+    });
+  }, []);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
