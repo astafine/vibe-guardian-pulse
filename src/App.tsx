@@ -4,6 +4,7 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
+import { useAndroidPermissions } from "@/hooks/useAndroidPermissions";
 import BottomNav from "./components/BottomNav";
 import FamilyDashboard from "./pages/FamilyDashboard";
 import DiagnosticFlow from "./pages/DiagnosticFlow";
@@ -15,6 +16,7 @@ import AppSettings from "./pages/AppSettings";
 import ChildProfile from "./pages/ChildProfile";
 import Auth from "./pages/Auth";
 import ProfileSetup from "./pages/ProfileSetup";
+import PermissionsSetup from "./pages/PermissionsSetup";
 import LinkChild from "./pages/LinkChild";
 import NotFound from "./pages/NotFound";
 
@@ -22,6 +24,7 @@ const queryClient = new QueryClient();
 
 function AppRoutes() {
   const { user, profile, loading } = useAuth();
+  const { allGranted, loading: permLoading } = useAndroidPermissions();
 
   if (loading) {
     return (
@@ -51,8 +54,24 @@ function AppRoutes() {
     );
   }
 
-  // Child user → child profile only
+  // Child user → permissions gate, then child profile
   if (profile.role === 'child') {
+    if (permLoading) {
+      return (
+        <div className="min-h-screen flex items-center justify-center bg-background">
+          <div className="w-10 h-10 rounded-xl gradient-navy animate-pulse" />
+        </div>
+      );
+    }
+
+    if (!allGranted) {
+      return (
+        <Routes>
+          <Route path="*" element={<PermissionsSetup />} />
+        </Routes>
+      );
+    }
+
     return (
       <>
         <Routes>
