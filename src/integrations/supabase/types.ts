@@ -14,16 +14,81 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      parent_child_links: {
+        Row: {
+          child_id: string
+          created_at: string
+          id: string
+          parent_id: string
+          status: string
+        }
+        Insert: {
+          child_id: string
+          created_at?: string
+          id?: string
+          parent_id: string
+          status?: string
+        }
+        Update: {
+          child_id?: string
+          created_at?: string
+          id?: string
+          parent_id?: string
+          status?: string
+        }
+        Relationships: []
+      }
+      profiles: {
+        Row: {
+          created_at: string
+          date_of_birth: string
+          first_name: string
+          id: string
+          last_name: string
+          link_code: string | null
+          role: Database["public"]["Enums"]["user_role"]
+          school_name: string | null
+          sex: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          date_of_birth: string
+          first_name: string
+          id?: string
+          last_name: string
+          link_code?: string | null
+          role: Database["public"]["Enums"]["user_role"]
+          school_name?: string | null
+          sex: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          date_of_birth?: string
+          first_name?: string
+          id?: string
+          last_name?: string
+          link_code?: string | null
+          role?: Database["public"]["Enums"]["user_role"]
+          school_name?: string | null
+          sex?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      link_parent_to_child: { Args: { p_link_code: string }; Returns: string }
     }
     Enums: {
-      [_ in never]: never
+      user_role: "parent" | "child"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -150,6 +215,8 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {},
+    Enums: {
+      user_role: ["parent", "child"],
+    },
   },
 } as const
