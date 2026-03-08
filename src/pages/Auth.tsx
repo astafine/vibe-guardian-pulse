@@ -65,8 +65,9 @@ export default function Auth() {
       } else {
         // Web (Lovable preview): use managed OAuth
         const { lovable } = await import('@/integrations/lovable/index');
+        const cleanOrigin = `${window.location.protocol}//${window.location.host}`;
         const { error } = await lovable.auth.signInWithOAuth('google', {
-          redirect_uri: window.location.origin,
+          redirect_uri: cleanOrigin,
         });
         if (error) throw error;
       }
