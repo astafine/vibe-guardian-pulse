@@ -41,10 +41,12 @@ export default function Auth() {
     try {
       if (Capacitor.isNativePlatform()) {
         // Native Android: first try system-browser OAuth URL flow
+        // Use the web URL as redirect (Android localhost isn't whitelisted)
+        const redirectUrl = 'https://cb70405b-b9cf-47f6-aac5-4784c26796c4.lovableproject.com';
         const { data, error } = await supabase.auth.signInWithOAuth({
           provider: 'google',
           options: {
-            redirectTo: `${window.location.origin}`,
+            redirectTo: redirectUrl,
             skipBrowserRedirect: true,
           },
         });
