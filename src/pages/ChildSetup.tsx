@@ -23,10 +23,10 @@ export default function ChildSetup() {
               </div>
               <h2 className="text-2xl font-extrabold text-foreground">Privacy Seal</h2>
               <p className="text-sm text-muted-foreground mt-3 max-w-[300px] leading-relaxed">
-                Vibecheck respects your child's privacy. We monitor emotional wellness patterns — never messages, photos, or private content.
+                VibeCheck respects your child's privacy.
               </p>
               <div className="mt-8 space-y-3 w-full">
-                {['No message reading', 'No location tracking', 'No social media access', 'Encrypted & anonymous'].map((item, i) => (
+                {['End-to-end encryption', 'Safety-first', 'Trusted by 500+ early-adopter families', 'DPDP Compliant'].map((item, i) => (
                   <motion.div
                     key={item}
                     initial={{ opacity: 0, y: 10 }}
