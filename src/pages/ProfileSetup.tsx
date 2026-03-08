@@ -5,7 +5,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
-import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
+
 import { toast } from 'sonner';
 import { User, GraduationCap, Calendar, Users, LogOut } from 'lucide-react';
 
@@ -114,9 +114,9 @@ export default function ProfileSetup() {
                   type="button"
                   key={s}
                   onClick={() => setSex(s)}
-                  className={`flex-1 glass-card rounded-xl p-3 text-center cursor-pointer transition-all ${sex === s ? 'ring-2 ring-primary' : ''}`}
+                  className={`flex-1 rounded-xl p-3 text-center cursor-pointer transition-all border-2 ${sex === s ? 'border-primary bg-primary/10 shadow-md' : 'border-border bg-card'}`}
                 >
-                  <span className="text-sm font-medium capitalize text-foreground">{s}</span>
+                  <span className={`text-sm font-medium capitalize ${sex === s ? 'text-primary font-bold' : 'text-foreground'}`}>{s}</span>
                 </button>
               ))}
             </div>
@@ -126,18 +126,22 @@ export default function ProfileSetup() {
             <Label className="text-xs font-semibold flex items-center gap-1.5">
               <Users className="w-3.5 h-3.5" /> I am a...
             </Label>
-            <RadioGroup value={role} onValueChange={(v) => setRole(v as 'parent' | 'child')} className="flex gap-3">
+            <div className="flex gap-3">
               {[
-                { value: 'parent', label: 'Parent', icon: '👨‍👩‍👧' },
-                { value: 'child', label: 'Child', icon: '🧒' },
+                { value: 'parent' as const, label: 'Parent', icon: '👨‍👩‍👧' },
+                { value: 'child' as const, label: 'Child', icon: '🧒' },
               ].map((r) => (
-                <label key={r.value} className={`flex-1 glass-card rounded-xl p-4 text-center cursor-pointer transition-all ${role === r.value ? 'ring-2 ring-primary' : ''}`}>
-                  <RadioGroupItem value={r.value} className="sr-only" />
+                <button
+                  type="button"
+                  key={r.value}
+                  onClick={() => setRole(r.value)}
+                  className={`flex-1 rounded-xl p-4 text-center cursor-pointer transition-all border-2 ${role === r.value ? 'border-primary bg-primary/10 shadow-md' : 'border-border bg-card'}`}
+                >
                   <div className="text-2xl mb-1">{r.icon}</div>
-                  <span className="text-sm font-semibold text-foreground">{r.label}</span>
-                </label>
+                  <span className={`text-sm font-semibold ${role === r.value ? 'text-primary' : 'text-foreground'}`}>{r.label}</span>
+                </button>
               ))}
-            </RadioGroup>
+            </div>
           </div>
 
           {role === 'child' && (
