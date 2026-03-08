@@ -1,13 +1,10 @@
 import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { supabase } from '@/integrations/supabase/client';
-import { Capacitor } from '@capacitor/core';
-import { Browser } from '@capacitor/browser';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Shield, Mail, Lock, Eye, EyeOff } from 'lucide-react';
 import { toast } from 'sonner';
-import { useNavigate } from 'react-router-dom';
 
 export default function Auth() {
   const navigate = useNavigate();
