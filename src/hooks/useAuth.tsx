@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import type { User, Session } from '@supabase/supabase-js';
 
@@ -19,36 +19,50 @@ export function useAuth() {
   const [session, setSession] = useState<Session | null>(null);
   const [profile, setProfile] = useState<UserProfile | null>(null);
   const [loading, setLoading] = useState(true);
+  const profileFetchRef = useRef(false);
+
+  const fetchProfile = async (userId: string) => {
+    const { data } = await supabase
+      .from('profiles')
+      .select('*')
+      .eq('user_id', userId)
+      .maybeSingle();
+    setProfile(data as UserProfile | null);
+    setLoading(false);
+  };
 
   useEffect(() => {
+    // First get the existing session
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      setSession(session);
+      setUser(session?.user ?? null);
+      if (session?.user) {
+        profileFetchRef.current = true;
+        fetchProfile(session.user.id);
+      } else {
+        setLoading(false);
+      }
+    });
+
+    // Then listen for auth changes
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
       async (_event, session) => {
         setSession(session);
         setUser(session?.user ?? null);
 
         if (session?.user) {
-          // Defer profile fetch to avoid deadlock
-          setTimeout(async () => {
-            const { data } = await supabase
-              .from('profiles')
-              .select('*')
-              .eq('user_id', session.user.id)
-              .maybeSingle();
-            setProfile(data as UserProfile | null);
-            setLoading(false);
-          }, 0);
+          // Skip if getSession already triggered this fetch
+          if (profileFetchRef.current) {
+            profileFetchRef.current = false;
+            return;
+          }
+          await fetchProfile(session.user.id);
         } else {
           setProfile(null);
           setLoading(false);
         }
       }
     );
-
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      setSession(session);
-      setUser(session?.user ?? null);
-      if (!session?.user) setLoading(false);
-    });
 
     return () => subscription.unsubscribe();
   }, []);
