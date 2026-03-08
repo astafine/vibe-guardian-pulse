@@ -4,6 +4,7 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
+import { useAndroidPermissions } from "@/hooks/useAndroidPermissions";
 import BottomNav from "./components/BottomNav";
 import FamilyDashboard from "./pages/FamilyDashboard";
 import DiagnosticFlow from "./pages/DiagnosticFlow";
@@ -15,6 +16,7 @@ import AppSettings from "./pages/AppSettings";
 import ChildProfile from "./pages/ChildProfile";
 import Auth from "./pages/Auth";
 import ProfileSetup from "./pages/ProfileSetup";
+import PermissionsSetup from "./pages/PermissionsSetup";
 import LinkChild from "./pages/LinkChild";
 import NotFound from "./pages/NotFound";
 
