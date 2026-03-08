@@ -54,8 +54,24 @@ function AppRoutes() {
     );
   }
 
-  // Child user → child profile only
+  // Child user → permissions gate, then child profile
   if (profile.role === 'child') {
+    if (permLoading) {
+      return (
+        <div className="min-h-screen flex items-center justify-center bg-background">
+          <div className="w-10 h-10 rounded-xl gradient-navy animate-pulse" />
+        </div>
+      );
+    }
+
+    if (!allGranted) {
+      return (
+        <Routes>
+          <Route path="*" element={<PermissionsSetup />} />
+        </Routes>
+      );
+    }
+
     return (
       <>
         <Routes>
