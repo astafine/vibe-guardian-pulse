@@ -81,14 +81,22 @@ export default function ChildProfile() {
         animate={{ opacity: 1, y: 0 }}
         className="pt-[max(1.5rem,env(safe-area-inset-top))] pb-2 px-6 relative z-10"
       >
-        <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-full bg-child-accent/20 flex items-center justify-center text-lg">
-            🏠
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded-full bg-child-accent/20 flex items-center justify-center text-lg">
+              🏠
+            </div>
+            <div>
+              <h1 className="text-xl font-bold text-child-foreground">VibeCheck</h1>
+              <p className="text-xs text-child-muted">Always here in the background</p>
+            </div>
           </div>
-          <div>
-            <h1 className="text-xl font-bold text-child-foreground">VibeCheck</h1>
-            <p className="text-xs text-child-muted">Always here in the background</p>
-          </div>
+          <button
+            onClick={async () => { await supabase.auth.signOut(); window.location.href = '/'; }}
+            className="p-2 rounded-lg text-child-muted hover:text-destructive transition-colors"
+          >
+            <LogOut className="w-5 h-5" />
+          </button>
         </div>
       </motion.header>
 
