@@ -26,7 +26,13 @@ const toolkitItems = [
   { emoji: '🎵', title: 'Hum Along', desc: '1 min · Pick a tune and hum' },
 ];
 
-type ActivePanel = null | 'nudge' | 'toolkit';
+const counselors = [
+  { name: 'Mrs. Sunita Sharma', role: 'Senior School Counselor', emoji: '👩‍🏫' },
+  { name: 'Mr. Rajesh Iyer', role: 'Student Wellness Coordinator', emoji: '👨‍🏫' },
+  { name: 'Ms. Priya Nair', role: 'Junior School Counselor', emoji: '👩‍💼' },
+];
+
+type ActivePanel = null | 'nudge' | 'toolkit' | 'counselor';
 
 export default function ChildProfile() {
   const { profile } = useAuth();
