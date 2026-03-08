@@ -1,9 +1,5 @@
 {
   "appId": "app.lovable.cb70405bb9cf47f6aac54784c26796c4",
   "appName": "Vibecheck",
-  "webDir": "dist",
-  "server": {
-    "url": "https://cb70405b-b9cf-47f6-aac5-4784c26796c4.lovableproject.com?forceHideBadge=true",
-    "cleartext": true
-  }
+  "webDir": "dist"
 }
