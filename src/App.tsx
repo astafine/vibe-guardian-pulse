@@ -31,6 +31,7 @@ const App = () => (
             <Route path="/trends" element={<Trends />} />
             <Route path="/library" element={<ExpertLibrary />} />
             <Route path="/settings" element={<AppSettings />} />
+            <Route path="/child-profile" element={<ChildProfile />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
           <BottomNav />
