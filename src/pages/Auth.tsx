@@ -1,16 +1,13 @@
 import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { supabase } from '@/integrations/supabase/client';
-import { Capacitor } from '@capacitor/core';
-import { Browser } from '@capacitor/browser';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Shield, Mail, Lock, Eye, EyeOff } from 'lucide-react';
 import { toast } from 'sonner';
-import { useNavigate } from 'react-router-dom';
 
 export default function Auth() {
-  const navigate = useNavigate();
+  
   const [isSignUp, setIsSignUp] = useState(false);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -39,52 +36,12 @@ export default function Auth() {
   const handleGoogleSignIn = async () => {
     setLoading(true);
     try {
-      if (Capacitor.isNativePlatform()) {
-        // Native Android: first try system-browser OAuth URL flow
-        // Use the web URL as redirect (Android localhost isn't whitelisted)
-        const redirectUrl = 'https://cb70405b-b9cf-47f6-aac5-4784c26796c4.lovableproject.com';
-        const { data, error } = await supabase.auth.signInWithOAuth({
-          provider: 'google',
-          options: {
-            redirectTo: redirectUrl,
-            skipBrowserRedirect: true,
-          },
-        });
+      const { lovable } = await import('@/integrations/lovable/index');
+      const { error } = await lovable.auth.signInWithOAuth('google', {
+        redirect_uri: window.location.origin,
+      });
 
-        if (error) throw error;
-
-        if (data?.url) {
-          try {
-            await Browser.open({ url: data.url });
-            return;
-          } catch {
-            // Fallback: force redirect in webview if Browser plugin fails
-            window.location.href = data.url;
-            return;
-          }
-        }
-
-        // Secondary fallback: direct redirect mode
-        const { error: redirectError } = await supabase.auth.signInWithOAuth({
-          provider: 'google',
-          options: {
-            redirectTo: `${window.location.origin}`,
-          },
-        });
-
-        if (redirectError) throw redirectError;
-      } else {
-        // Web (Lovable preview): managed OAuth
-        try {
-          const { lovable } = await import('@/integrations/lovable/index');
-          const { error } = await lovable.auth.signInWithOAuth('google', {
-            redirect_uri: window.location.origin,
-          });
-          if (error) throw error;
-        } catch {
-          toast.error('Google sign-in is not available in this environment');
-        }
-      }
+      if (error) throw error;
     } catch (err: any) {
       toast.error(err?.message || 'Could not start Google sign-in');
     } finally {
