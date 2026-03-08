@@ -78,6 +78,7 @@ function AppRoutes() {
         <Route path="/library" element={<ExpertLibrary />} />
         <Route path="/settings" element={<AppSettings />} />
         <Route path="/child-profile" element={<ChildProfile />} />
+        <Route path="/profile-setup" element={<Navigate to="/" replace />} />
         <Route path="*" element={<NotFound />} />
       </Routes>
       <BottomNav />
