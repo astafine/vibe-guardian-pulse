@@ -70,7 +70,7 @@ export default function LinkChild() {
           </div>
           <h2 className="text-xl font-bold text-foreground">Enter Link Code</h2>
           <p className="text-sm text-muted-foreground mt-2 max-w-[300px]">
-            Ask your child to open their Vibecheck profile and share the link code displayed there.
+            Ask your child to open their VibeCheck profile and share the link code displayed there.
           </p>
         </motion.div>
 

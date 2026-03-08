@@ -79,7 +79,7 @@ export default function ChildSetup() {
                 <Bell className="w-5 h-5 text-mint-dark" />
                 <div className="text-left">
                   <p className="text-xs font-bold text-foreground">Persistent Notification</p>
-                  <p className="text-xs text-muted-foreground">"Vibecheck is protecting your well-being."</p>
+                  <p className="text-xs text-muted-foreground">"VibeCheck is protecting your well-being."</p>
                 </div>
               </div>
               <button onClick={() => navigate('/')} className="mt-8 w-full gradient-navy text-primary-foreground font-bold py-3.5 rounded-xl">

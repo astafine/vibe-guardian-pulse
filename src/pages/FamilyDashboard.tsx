@@ -66,7 +66,7 @@ export default function FamilyDashboard() {
 
   return (
     <div className="min-h-screen pb-24">
-      <AppHeader title="Vibecheck" subtitle="Your family's emotional wellness" />
+      <AppHeader title="VibeCheck" subtitle="Your family's emotional wellness" />
 
       <div className="px-5 mt-4 space-y-4">
         {/* Quick summary */}
