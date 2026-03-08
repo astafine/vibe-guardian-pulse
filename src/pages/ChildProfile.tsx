@@ -28,9 +28,17 @@ const toolkitItems = [
 type ActivePanel = null | 'nudge' | 'toolkit';
 
 export default function ChildProfile() {
+  const { profile } = useAuth();
   const [reflected, setReflected] = useState(false);
   const [activePanel, setActivePanel] = useState<ActivePanel>(null);
   const [nudgeSent, setNudgeSent] = useState(false);
+
+  const copyLinkCode = () => {
+    if (profile?.link_code) {
+      navigator.clipboard.writeText(profile.link_code);
+      toast.success('Link code copied!');
+    }
+  };
 
   const handleReflect = () => {
     setReflected(true);
