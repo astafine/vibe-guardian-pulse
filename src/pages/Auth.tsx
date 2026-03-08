@@ -36,29 +36,42 @@ export default function Auth() {
   };
 
   const handleGoogleSignIn = async () => {
-    console.log('[OAuth] Button clicked, starting Google sign-in...');
-    toast.info('Starting Google sign-in...');
     setLoading(true);
     try {
-      console.log('[OAuth] Importing lovable auth module...');
-      const { lovable } = await import('@/integrations/lovable/index');
-      console.log('[OAuth] Calling signInWithOAuth...');
-      toast.info('Calling OAuth...');
-      
-      const { error } = await lovable.auth.signInWithOAuth('google', {
-        redirect_uri: window.location.origin,
-      });
+      if (Capacitor.isNativePlatform()) {
+        // Native Android: get OAuth URL and open in external browser
+        console.log('[OAuth] Native platform detected, using Browser plugin');
+        toast.info('Opening Google sign-in...');
+        
+        const { data, error } = await supabase.auth.signInWithOAuth({
+          provider: 'google',
+          options: {
+            redirectTo: 'https://cb70405b-b9cf-47f6-aac5-4784c26796c4.lovableproject.com',
+            skipBrowserRedirect: true,
+          },
+        });
 
-      console.log('[OAuth] signInWithOAuth returned:', error ? `Error: ${error.message}` : 'Success/Redirect');
-      
-      if (error) {
-        toast.error(`OAuth error: ${error.message}`);
-        throw error;
+        if (error) {
+          console.error('[OAuth] signInWithOAuth error:', error);
+          throw error;
+        }
+
+        if (data?.url) {
+          console.log('[OAuth] Opening URL in browser:', data.url.substring(0, 80) + '...');
+          await Browser.open({ url: data.url, windowName: '_system' });
+        } else {
+          throw new Error('No OAuth URL returned');
+        }
+      } else {
+        // Web (Lovable preview): use managed OAuth
+        const { lovable } = await import('@/integrations/lovable/index');
+        const { error } = await lovable.auth.signInWithOAuth('google', {
+          redirect_uri: window.location.origin,
+        });
+        if (error) throw error;
       }
-      
-      toast.success('OAuth initiated successfully');
     } catch (err: any) {
-      console.error('[OAuth] Caught error:', err);
+      console.error('[OAuth] Error:', err);
       toast.error(err?.message || 'Could not start Google sign-in');
     } finally {
       setLoading(false);
