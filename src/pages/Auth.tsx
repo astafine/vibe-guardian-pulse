@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { supabase } from '@/integrations/supabase/client';
+import { lovable } from '@/integrations/lovable/index';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Shield, Mail, Lock, Eye, EyeOff } from 'lucide-react';
