@@ -6,7 +6,7 @@ import VibeMeter from '@/components/VibeMeter';
 import TrendBadge from '@/components/TrendBadge';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/hooks/useAuth';
-import { Plus, Link2, Users, ChevronRight, ClipboardCheck, X } from 'lucide-react';
+import { Plus, Users, ChevronRight, ClipboardCheck, X } from 'lucide-react';
 import { VibeZone } from '@/types/vibecheck';
 
 interface LinkedChild {
@@ -234,7 +234,7 @@ export default function FamilyDashboard() {
           </motion.div>
         )}
 
-        {/* Link existing child */}
+        {/* Add a child */}
         <motion.button
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
@@ -242,20 +242,8 @@ export default function FamilyDashboard() {
           onClick={() => navigate('/link-child')}
           className="w-full glass-card rounded-2xl p-4 flex items-center justify-center gap-2 text-muted-foreground hover:text-foreground transition-colors"
         >
-          <Link2 className="w-5 h-5" />
-          <span className="font-semibold text-sm">Link a child's profile</span>
-        </motion.button>
-
-        {/* Add child device */}
-        <motion.button
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 0.5 }}
-          onClick={() => navigate('/setup')}
-          className="w-full glass-card rounded-2xl p-4 flex items-center justify-center gap-2 text-muted-foreground hover:text-foreground transition-colors"
-        >
           <Plus className="w-5 h-5" />
-          <span className="font-semibold text-sm">Add a child device</span>
+          <span className="font-semibold text-sm">Add a child</span>
         </motion.button>
       </div>
     </div>
