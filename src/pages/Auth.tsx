@@ -1,12 +1,12 @@
 import { useState } from 'react';
 import { motion } from 'framer-motion';
-import { supabase } from '@/integrations/supabase/client';
 import { Capacitor } from '@capacitor/core';
-import { Browser } from '@capacitor/browser';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Shield, Mail, Lock, Eye, EyeOff } from 'lucide-react';
 import { toast } from 'sonner';
+import { supabase } from '@/integrations/supabase/client';
+import { lovable } from '@/integrations/lovable';
 
 export default function Auth() {
   
@@ -38,39 +38,18 @@ export default function Auth() {
   const handleGoogleSignIn = async () => {
     setLoading(true);
     try {
-      if (Capacitor.isNativePlatform()) {
-        // Native Android: get OAuth URL and open in external browser
-        console.log('[OAuth] Native platform detected, using Browser plugin');
-        toast.info('Opening Google sign-in...');
-        
-        const { data, error } = await supabase.auth.signInWithOAuth({
-          provider: 'google',
-          options: {
-            redirectTo: 'https://vibe-guardian-pulse.lovable.app',
-            skipBrowserRedirect: true,
-          },
-        });
+      const redirect_uri = Capacitor.isNativePlatform()
+        ? 'https://vibe-guardian-pulse.lovable.app/auth'
+        : `${window.location.origin}/auth`;
 
-        if (error) {
-          console.error('[OAuth] signInWithOAuth error:', error);
-          throw error;
-        }
+      const { error } = await lovable.auth.signInWithOAuth('google', {
+        redirect_uri,
+        extraParams: {
+          prompt: 'select_account',
+        },
+      });
 
-        if (data?.url) {
-          console.log('[OAuth] Opening URL in browser:', data.url.substring(0, 80) + '...');
-          await Browser.open({ url: data.url, windowName: '_system' });
-        } else {
-          throw new Error('No OAuth URL returned');
-        }
-      } else {
-        // Web preview: use full-page redirect flow to avoid Firefox COOP popup issues
-        const redirectTo = `${window.location.protocol}//${window.location.host}/auth`;
-        const { error } = await supabase.auth.signInWithOAuth({
-          provider: 'google',
-          options: { redirectTo },
-        });
-        if (error) throw error;
-      }
+      if (error) throw error;
     } catch (err: any) {
       console.error('[OAuth] Error:', err);
       toast.error(err?.message || 'Could not start Google sign-in');
