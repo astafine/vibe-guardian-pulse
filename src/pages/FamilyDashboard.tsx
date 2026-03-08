@@ -4,7 +4,8 @@ import AppHeader from '@/components/AppHeader';
 import FamilyCard from '@/components/FamilyCard';
 import { mockChildren } from '@/data/mockData';
 import { Child } from '@/types/vibecheck';
-import { Plus } from 'lucide-react';
+import { Plus, Link2 } from 'lucide-react';
+import { useAuth } from '@/hooks/useAuth';
 
 export default function FamilyDashboard() {
   const navigate = useNavigate();
