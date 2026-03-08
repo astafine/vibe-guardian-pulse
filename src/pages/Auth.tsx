@@ -8,7 +8,7 @@ import { toast } from 'sonner';
 import { supabase } from '@/integrations/supabase/client';
 
 // TODO: Replace with your actual Google Web Client ID from Google Cloud Console
-const GOOGLE_WEB_CLIENT_ID = 'YOUR_GOOGLE_WEB_CLIENT_ID';
+const GOOGLE_WEB_CLIENT_ID = '480065586302-avgppi9ear3lnrespst7doaeje7sit76.apps.googleusercontent.com';
 
 export default function Auth() {
   
