@@ -24,6 +24,7 @@ const queryClient = new QueryClient();
 
 function AppRoutes() {
   const { user, profile, loading } = useAuth();
+  const { allGranted, loading: permLoading } = useAndroidPermissions();
 
   if (loading) {
     return (
