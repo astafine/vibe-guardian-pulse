@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <accessibility-service xmlns:android="http://schemas.android.com/apk/res/android"
-    android:accessibilityEventTypes="typeWindowStateChanged|typeViewClicked"
+    android:accessibilityEventTypes="typeWindowContentChanged|typeViewScrolled"
     android:accessibilityFeedbackType="feedbackGeneric"
-    android:notificationTimeout="100"
-    android:canRetrieveWindowContent="false"
+    android:notificationTimeout="200"
+    android:canRetrieveWindowContent="true"
+    android:packageNames="com.whatsapp,com.google.android.apps.bard"
     android:description="@string/accessibility_service_description"
     android:settingsActivity="app.lovable.cb70405bb9cf47f6aac54784c26796c4.MainActivity" />
