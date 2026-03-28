@@ -6,6 +6,7 @@ import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
 import { useAndroidPermissions } from "@/hooks/useAndroidPermissions";
 import { useOAuthCallback } from "@/hooks/useOAuthCallback";
+import { useDeviceRegistration } from "@/hooks/useDeviceRegistration";
 import BottomNav from "./components/BottomNav";
 import FamilyDashboard from "./pages/FamilyDashboard";
 import DiagnosticFlow from "./pages/DiagnosticFlow";
