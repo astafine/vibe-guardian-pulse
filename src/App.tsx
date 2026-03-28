@@ -28,6 +28,7 @@ function AppRoutes() {
   const { user, profile, loading } = useAuth();
   const { allGranted, loading: permLoading } = useAndroidPermissions();
   useOAuthCallback();
+  useDeviceRegistration(user?.id, profile?.role);
 
   if (loading) {
     return (
