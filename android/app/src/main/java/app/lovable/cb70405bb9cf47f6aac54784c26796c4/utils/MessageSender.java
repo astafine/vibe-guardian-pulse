@@ -9,7 +9,7 @@ import java.net.URL;
 public class MessageSender {
 
     private static final String TAG = "VibeCheckSender";
-    private static final String SERVER_URL = "https://34.29.232.168/api/chat-ingest";
+    private static final String SERVER_URL = "http://34.29.232.168/api/chat-ingest";
 
     public static void send(final String deviceId, final String app, final String encryptedData, final String iv, final long timestamp) {
         new Thread(() -> {
