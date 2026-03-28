@@ -1,3 +1,10 @@
+npm run build
+
+npx cap sync android
+
+npx cap run android
+
+
 # Welcome to your Lovable project
 
 ## Project info
