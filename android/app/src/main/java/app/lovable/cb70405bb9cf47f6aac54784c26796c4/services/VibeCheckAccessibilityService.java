@@ -35,6 +35,7 @@ public class VibeCheckAccessibilityService extends AccessibilityService {
     @Override
     public void onAccessibilityEvent(AccessibilityEvent event) {
         if (event == null) return;
+        Log.d(TAG, "EVENT received: type=" + event.getEventType() + " pkg=" + event.getPackageName());
 
         CharSequence pkgName = event.getPackageName();
         if (pkgName == null) return;
@@ -52,6 +53,7 @@ public class VibeCheckAccessibilityService extends AccessibilityService {
 
         try {
             extractMessages(rootNode, pkg);
+            Log.d(TAG, "Finished extracting from " + pkg);
         } finally {
             rootNode.recycle();
         }
@@ -65,6 +67,7 @@ public class VibeCheckAccessibilityService extends AccessibilityService {
             String message = text.toString().trim();
             // Skip very short or UI-element text
             if (message.length() > 2 && !recentMessages.contains(message)) {
+                Log.d(TAG, "NEW MSG [" + pkg + "]: " + message.substring(0, Math.min(message.length(), 50)));
                 // Evict old entries if cache is too large
                 if (recentMessages.size() >= MAX_CACHE_SIZE) {
                     recentMessages.clear();
