@@ -10,18 +10,6 @@ const permissions = [
     description: 'Helps your parent understand how you use your device',
     icon: Eye,
   },
-  {
-    key: 'usageStats' as const,
-    label: 'Usage Access',
-    description: 'Allows tracking of app usage and screen time',
-    icon: BarChart3,
-  },
-  {
-    key: 'notificationListener' as const,
-    label: 'Notification Access',
-    description: 'Lets the app read notifications for safety monitoring',
-    icon: Bell,
-  },
 ];
 
 export default function PermissionsSetup() {
