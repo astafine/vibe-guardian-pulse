@@ -41,7 +41,7 @@ export function useAndroidPermissions() {
     return () => document.removeEventListener('resume', handleResume);
   }, [check, isNative]);
 
-  const allGranted = status.accessibility && status.usageStats && status.notificationListener;
+  const allGranted = status.accessibility;
 
   const openSettings = useCallback(async (type: 'accessibility' | 'usageStats' | 'notificationListener') => {
     if (!isNative) return;
