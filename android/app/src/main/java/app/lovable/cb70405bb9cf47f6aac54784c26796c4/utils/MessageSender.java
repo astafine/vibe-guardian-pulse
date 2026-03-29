@@ -47,13 +47,17 @@ public class MessageSender {
                 int responseCode = conn.getResponseCode();
                 Log.d(TAG, "Server response: " + responseCode);
 
-                 String responseBody = readStream(
+                String responseBody = readStream(
                     responseCode >= 200 && responseCode < 400 ? conn.getInputStream() : conn.getErrorStream()
                 );
                 Log.d(TAG, "Server response body: " + responseBody);
 
                 if (responseCode >= 200 && responseCode < 300) {
                     showToast(context, "Server send OK (" + responseCode + ")");
+                } else if (responseCode == 401 && responseBody.contains("DEVICE_NOT_REGISTERED")) {
+                    Log.w(TAG, "Device not registered, re-registering key...");
+                    showToast(context, "Re-registering device key...");
+                    KeyManager.forceReRegister(context);
                 } else {
                     showToast(context, "Server send failed (" + responseCode + ")");
                 }
