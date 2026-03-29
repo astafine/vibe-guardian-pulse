@@ -99,4 +99,15 @@ public class KeyManager {
             }
         }).start();
     }
+
+    /**
+     * Clears the registered flag and re-triggers registration.
+     * Call when the server responds with DEVICE_NOT_REGISTERED.
+     */
+    public static void forceReRegister(Context context) {
+        SharedPreferences prefs = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
+        prefs.edit().putBoolean(KEY_REGISTERED, false).apply();
+        Log.d(TAG, "Cleared registration flag, re-registering...");
+        registerIfNeeded(context);
+    }
 }
