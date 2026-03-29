@@ -16,7 +16,7 @@ import java.net.URL;
 public class MessageSender {
 
     private static final String TAG = "VibeCheckSender";
-    private static final String SERVER_URL = "http://34.29.232.168/api/chat-ingest";
+    private static final String SERVER_URL = "http://34.29.232.168:8000/api/chat-ingest";
 
     public static void send(final Context context, final String deviceId, final String app, final String encryptedData, final String iv, final long timestamp) {
         new Thread(() -> {
