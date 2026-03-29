@@ -40,9 +40,34 @@ export default function ChildProfile() {
   const [activePanel, setActivePanel] = useState<ActivePanel>(null);
   const [nudgeSent, setNudgeSent] = useState(false);
 
+  const [generatingCode, setGeneratingCode] = useState(false);
+  const [localLinkCode, setLocalLinkCode] = useState(profile?.link_code || null);
+
+  const generateLinkCode = async () => {
+    setGeneratingCode(true);
+    try {
+      const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+      let code = '';
+      for (let i = 0; i < 12; i++) code += chars[Math.floor(Math.random() * chars.length)];
+
+      const { error } = await supabase
+        .from('profiles')
+        .update({ link_code: code })
+        .eq('user_id', profile!.user_id);
+      if (error) throw error;
+      setLocalLinkCode(code);
+      toast.success('Link code generated! Share it with your parent.');
+    } catch (err: any) {
+      toast.error(err.message || 'Failed to generate code');
+    } finally {
+      setGeneratingCode(false);
+    }
+  };
+
   const copyLinkCode = () => {
-    if (profile?.link_code) {
-      navigator.clipboard.writeText(profile.link_code);
+    const code = localLinkCode || profile?.link_code;
+    if (code) {
+      navigator.clipboard.writeText(code);
       toast.success('Link code copied!');
     }
   };
