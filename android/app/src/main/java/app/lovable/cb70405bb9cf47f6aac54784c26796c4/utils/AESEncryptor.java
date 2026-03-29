@@ -8,11 +8,14 @@ import java.security.SecureRandom;
 
 public class AESEncryptor {
 
-    private static final String AES_KEY_B64 = "5CTqECucIw3lEj9gg8O4eRwtw6IcJ2buzn9HoTdwh3U=";
     private static final String ALGORITHM = "AES/CBC/PKCS5Padding";
 
-    public static String[] encrypt(String plainText) throws Exception {
-        byte[] keyBytes = Base64.decode(AES_KEY_B64, Base64.NO_WRAP);
+    /**
+     * Encrypts plaintext using the provided Base64-encoded AES key.
+     * Returns [encryptedDataB64, ivB64].
+     */
+    public static String[] encrypt(String plainText, String keyB64) throws Exception {
+        byte[] keyBytes = Base64.decode(keyB64, Base64.NO_WRAP);
         SecretKeySpec keySpec = new SecretKeySpec(keyBytes, "AES");
 
         byte[] iv = new byte[16];
