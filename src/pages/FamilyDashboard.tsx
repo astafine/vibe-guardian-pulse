@@ -4,10 +4,13 @@ import { motion, AnimatePresence } from 'framer-motion';
 import AppHeader from '@/components/AppHeader';
 import VibeMeter from '@/components/VibeMeter';
 import TrendBadge from '@/components/TrendBadge';
+import MentalStateCard from '@/components/MentalStateCard';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/hooks/useAuth';
-import { Plus, Users, ChevronRight, ClipboardCheck, X } from 'lucide-react';
+import { useMentalState } from '@/hooks/useMentalState';
+import { Plus, Users, ChevronRight, ClipboardCheck, X, Trash2 } from 'lucide-react';
 import { VibeZone } from '@/types/vibecheck';
+import { toast } from 'sonner';
 
 interface LinkedChild {
   id: string;
@@ -16,28 +19,27 @@ interface LinkedChild {
   last_name: string;
   date_of_birth: string;
   school_name: string | null;
+  device_id: string | null;
 }
 
-// Dummy vibe data per child (will come from phone content analysis model later)
-function getDummyVibeData(childId: string): { vibeScore: number; vibeZone: VibeZone; trendText: string; trendDirection: 'up' | 'stable' | 'down'; weeklyScores: number[] } {
-  // Generate consistent dummy data based on childId hash
+function getDummyVibeData(childId: string) {
   const hash = childId.split('').reduce((a, c) => a + c.charCodeAt(0), 0);
-  const score = 30 + (hash % 60); // 30-89 range
+  const score = 30 + (hash % 60);
   const zone: VibeZone = score >= 70 ? 'green' : score >= 45 ? 'yellow' : 'red';
   const directions: Array<'up' | 'stable' | 'down'> = ['up', 'stable', 'down'];
   const dir = directions[hash % 3];
-  const trendTexts = {
-    up: 'Improving this week',
-    stable: 'Stable for 5 days',
-    down: '3-day downward trend',
-  };
-  // Generate 7 daily scores for the week
+  const trendTexts = { up: 'Improving this week', stable: 'Stable for 5 days', down: '3-day downward trend' };
   const weeklyScores = Array.from({ length: 7 }, (_, i) => {
     const base = score + Math.sin(i * 1.5 + hash) * 15;
     return Math.max(10, Math.min(100, Math.round(base)));
   });
-
   return { vibeScore: score, vibeZone: zone, trendText: trendTexts[dir], trendDirection: dir, weeklyScores };
+}
+
+function ChildMentalState({ deviceId }: { deviceId: string | null }) {
+  const { data, loading } = useMentalState(deviceId);
+  const latest = data.length > 0 ? data[0] : null;
+  return <MentalStateCard entry={latest} history={data} loading={loading} />;
 }
 
 export default function FamilyDashboard() {
@@ -47,39 +49,69 @@ export default function FamilyDashboard() {
   const [loading, setLoading] = useState(true);
   const [expandedChildId, setExpandedChildId] = useState<string | null>(null);
 
-  useEffect(() => {
+  const fetchLinkedChildren = async () => {
     if (!user) return;
-    
-    const fetchLinkedChildren = async () => {
-      const { data: links } = await supabase
-        .from('parent_child_links')
-        .select('child_id')
-        .eq('parent_id', user.id)
-        .eq('status', 'active');
+    const { data: links } = await supabase
+      .from('parent_child_links')
+      .select('child_id')
+      .eq('parent_id', user.id)
+      .eq('status', 'active');
 
-      if (links && links.length > 0) {
-        const childIds = links.map(l => l.child_id);
-        const { data: profiles } = await supabase
-          .from('profiles')
-          .select('*')
-          .in('user_id', childIds);
-        
-        if (profiles) {
-          setChildren(profiles.map(p => ({
-            id: p.id,
-            user_id: p.user_id,
-            first_name: p.first_name,
-            last_name: p.last_name,
-            date_of_birth: p.date_of_birth,
-            school_name: p.school_name,
-          })));
-        }
+    if (links && links.length > 0) {
+      const childIds = links.map(l => l.child_id);
+      const { data: profiles } = await supabase
+        .from('profiles')
+        .select('*')
+        .in('user_id', childIds);
+
+      // Fetch device IDs for each child
+      const { data: devices } = await supabase
+        .from('user_devices')
+        .select('user_id, device_id')
+        .in('user_id', childIds);
+
+      const deviceMap = new Map(devices?.map(d => [d.user_id, d.device_id]) || []);
+
+      if (profiles) {
+        setChildren(profiles.map(p => ({
+          id: p.id,
+          user_id: p.user_id,
+          first_name: p.first_name,
+          last_name: p.last_name,
+          date_of_birth: p.date_of_birth,
+          school_name: p.school_name,
+          device_id: deviceMap.get(p.user_id) || null,
+        })));
       }
-      setLoading(false);
-    };
+    } else {
+      setChildren([]);
+    }
+    setLoading(false);
+  };
 
+  useEffect(() => {
     fetchLinkedChildren();
   }, [user]);
+
+  const handleDeleteChild = async (childUserId: string, childName: string) => {
+    if (!user) return;
+    const confirmed = window.confirm(`Remove ${childName} from your linked children?`);
+    if (!confirmed) return;
+
+    const { error } = await supabase
+      .from('parent_child_links')
+      .delete()
+      .eq('parent_id', user.id)
+      .eq('child_id', childUserId);
+
+    if (error) {
+      toast.error('Failed to remove child');
+    } else {
+      toast.success(`${childName} removed`);
+      setChildren(prev => prev.filter(c => c.user_id !== childUserId));
+      if (expandedChildId === childUserId) setExpandedChildId(null);
+    }
+  };
 
   const getAge = (dob: string) => {
     const birth = new Date(dob);
@@ -141,7 +173,6 @@ export default function FamilyDashboard() {
                 transition={{ delay: i * 0.1, duration: 0.4 }}
                 className="glass-card-elevated rounded-2xl overflow-hidden"
               >
-                {/* Main card - tap to expand trends */}
                 <div
                   onClick={() => toggleExpand(child.user_id)}
                   className="p-5 cursor-pointer active:scale-[0.99] transition-transform"
@@ -161,7 +192,6 @@ export default function FamilyDashboard() {
                   </div>
                 </div>
 
-                {/* Expanded trends section */}
                 <AnimatePresence>
                   {isExpanded && (
                     <motion.div
@@ -172,16 +202,29 @@ export default function FamilyDashboard() {
                       className="overflow-hidden"
                     >
                       <div className="px-5 pb-5 pt-1 border-t border-border/50">
-                        {/* Weekly trend chart */}
                         <div className="flex items-center justify-between mb-3">
                           <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">Weekly Trend</p>
-                          <button
-                            onClick={(e) => { e.stopPropagation(); setExpandedChildId(null); }}
-                            className="text-muted-foreground hover:text-foreground"
-                          >
-                            <X className="w-4 h-4" />
-                          </button>
+                          <div className="flex items-center gap-2">
+                            <button
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                handleDeleteChild(child.user_id, child.first_name);
+                              }}
+                              className="text-muted-foreground hover:text-destructive transition-colors"
+                              title="Remove child"
+                            >
+                              <Trash2 className="w-4 h-4" />
+                            </button>
+                            <button
+                              onClick={(e) => { e.stopPropagation(); setExpandedChildId(null); }}
+                              className="text-muted-foreground hover:text-foreground"
+                            >
+                              <X className="w-4 h-4" />
+                            </button>
+                          </div>
                         </div>
+
+                        {/* Weekly bar chart */}
                         <div className="flex items-end gap-1.5 h-20">
                           {vibeData.weeklyScores.map((score, d) => (
                             <motion.div
@@ -201,7 +244,12 @@ export default function FamilyDashboard() {
                           ))}
                         </div>
 
-                        {/* Insight Interview CTA (optional) */}
+                        {/* Mental State from API */}
+                        <div className="mt-4">
+                          <ChildMentalState deviceId={child.device_id} />
+                        </div>
+
+                        {/* Verify Physical Signs CTA */}
                         <button
                           onClick={(e) => {
                             e.stopPropagation();
