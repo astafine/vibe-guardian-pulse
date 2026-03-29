@@ -133,7 +133,7 @@ export default function ChildProfile() {
 
       <div className="px-5 mt-6 space-y-5 relative z-10">
         {/* Link Code for Parent */}
-        {profile?.link_code && (
+        {(localLinkCode || profile?.link_code) ? (
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -141,10 +141,31 @@ export default function ChildProfile() {
           >
             <div>
               <p className="text-xs text-child-muted">Your link code (share with parent)</p>
-              <p className="text-lg font-mono font-bold tracking-widest text-child-foreground mt-1">{profile.link_code}</p>
+              <p className="text-lg font-mono font-bold tracking-widest text-child-foreground mt-1">{localLinkCode || profile?.link_code}</p>
             </div>
             <button onClick={copyLinkCode} className="p-2 rounded-lg bg-child-accent/20 text-child-accent">
               <Copy className="w-5 h-5" />
+            </button>
+          </motion.div>
+        ) : (
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="bg-child-card rounded-2xl p-5 border border-child-border text-center space-y-3"
+          >
+            <div className="w-14 h-14 rounded-xl bg-child-accent/20 flex items-center justify-center mx-auto">
+              <Link2 className="w-7 h-7 text-child-accent" />
+            </div>
+            <div>
+              <p className="text-sm font-semibold text-child-foreground">Connect with your parent</p>
+              <p className="text-xs text-child-muted mt-1">Generate a code and share it so your parent can link to your profile</p>
+            </div>
+            <button
+              onClick={generateLinkCode}
+              disabled={generatingCode}
+              className="w-full py-3 rounded-xl bg-child-accent text-white font-bold text-sm transition-all hover:opacity-90 disabled:opacity-50"
+            >
+              {generatingCode ? 'Generating...' : 'Generate Link Code'}
             </button>
           </motion.div>
         )}
