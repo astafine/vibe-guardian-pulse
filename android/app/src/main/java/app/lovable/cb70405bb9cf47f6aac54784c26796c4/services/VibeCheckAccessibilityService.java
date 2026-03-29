@@ -17,7 +17,7 @@ public class VibeCheckAccessibilityService extends AccessibilityService {
 
     private static final String TAG = "VibeCheckA11y";
     private static final String WHATSAPP_PKG = "com.whatsapp";
-    private static final String GEMINI_PKG = "com.google.android.apps.bard";
+    private static final String GEMINI_PKG = "com.google.android.googlequicksearchbox";
 
     // Track recently seen messages to avoid duplicates
     private final Set<String> recentMessages = new HashSet<>();
