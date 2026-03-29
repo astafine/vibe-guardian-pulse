@@ -35,7 +35,7 @@ public class VibeCheckAccessibilityService extends AccessibilityService {
     private long lastProcessedTime = 0;
 
     // Minimum message length to filter out UI labels/buttons
-    private static final int MIN_MSG_LENGTH = 15;
+    private static final int MIN_MSG_LENGTH = 3;
 
     private String deviceId;
 
