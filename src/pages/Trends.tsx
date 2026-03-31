@@ -65,15 +65,25 @@ export default function Trends() {
 
       // Fetch trends for each child with a device
       const trends: Record<string, number[]> = {};
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session) { setLoading(false); return; }
+      const projectId = import.meta.env.VITE_SUPABASE_PROJECT_ID;
+
       for (const child of mapped) {
         if (child.device_id) {
           try {
             const res = await fetch(
-              `http://34.29.232.168:8000/api/mental-state/${child.device_id}/latest`
+              `https://${projectId}.supabase.co/functions/v1/mental-state?device_id=${child.device_id}`,
+              {
+                headers: {
+                  Authorization: `Bearer ${session.access_token}`,
+                  'Content-Type': 'application/json',
+                },
+              }
             );
             if (res.ok) {
-              const entries: MentalStateEntry[] = await res.json();
-              // Take last 7 scores (or pad with 0s)
+              const json = await res.json();
+              const entries: MentalStateEntry[] = Array.isArray(json) ? json : [json];
               const scores = entries
                 .slice(0, 7)
                 .map(e => Math.round((e.emotional_state?.overall_score ?? 0) * 100))
