@@ -31,9 +31,9 @@ export function useMentalState(deviceId: string | null) {
       const { data: { session } } = await supabase.auth.getSession();
       if (!session) throw new Error('Not authenticated');
 
-      const projectId = import.meta.env.VITE_SUPABASE_PROJECT_ID;
+      const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
       const res = await fetch(
-        `https://${projectId}.supabase.co/functions/v1/mental-state?device_id=${deviceId}`,
+        `${supabaseUrl}/functions/v1/mental-state?device_id=${deviceId}`,
         {
           headers: {
             Authorization: `Bearer ${session.access_token}`,
