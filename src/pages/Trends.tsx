@@ -84,6 +84,7 @@ export default function Trends() {
           console.log(`[Trends] ${child.first_name} response status:`, res.status);
           if (res.ok) {
             const json = await res.json();
+            console.log(`[Trends] ${child.first_name} data:`, JSON.stringify(json).slice(0, 200));
             const entries = Array.isArray(json) ? json : [json];
             const scores = entries
               .slice(0, 7)
