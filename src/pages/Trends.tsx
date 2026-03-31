@@ -83,12 +83,20 @@ export default function Trends() {
           );
           if (res.ok) {
             const json = await res.json();
-            const entries: MentalStateEntry[] = Array.isArray(json) ? json : [json];
+            const entries = Array.isArray(json) ? json : [json];
             const scores = entries
               .slice(0, 7)
-              .map(e => Math.round((e.emotional_state?.overall_score ?? 0) * 100))
+              .map((e: any) => {
+                // Try multiple possible score fields from backend
+                const score = e?.emotional_state?.overall_score
+                  ?? e?.sentiment_score
+                  ?? e?.confidence_score
+                  ?? 0;
+                return Math.round(score * 100);
+              })
+              .filter((n: number) => !Number.isNaN(n) && n > 0)
               .reverse();
-            trends[child.user_id] = scores;
+            if (scores.length) trends[child.user_id] = scores;
           }
         } catch {
           // ignore fetch errors
