@@ -65,19 +65,13 @@ export default function Trends() {
 
       // Fetch trends for each child with a device
       const trends: Record<string, number[]> = {};
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session) { setLoading(false); return; }
+      const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
+
       for (const child of mapped) {
         if (!child.device_id) continue;
         try {
-          const { data, error } = await supabase.functions.invoke('mental-state', {
-            method: 'GET',
-            headers: { 'Content-Type': 'application/json' },
-            body: null,
-          });
-          // supabase.functions.invoke doesn't support query params natively,
-          // so we need to use fetch with the proper URL from the client
-          const { data: { session } } = await supabase.auth.getSession();
-          if (!session) continue;
-          const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
           const res = await fetch(
             `${supabaseUrl}/functions/v1/mental-state?device_id=${child.device_id}`,
             {
