@@ -81,6 +81,7 @@ export default function Trends() {
               },
             }
           );
+          console.log(`[Trends] ${child.first_name} response status:`, res.status);
           if (res.ok) {
             const json = await res.json();
             const entries = Array.isArray(json) ? json : [json];
