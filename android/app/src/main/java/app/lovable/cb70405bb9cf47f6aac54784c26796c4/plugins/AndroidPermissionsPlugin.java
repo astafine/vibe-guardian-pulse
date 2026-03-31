@@ -23,6 +23,15 @@ import java.util.Set;
 public class AndroidPermissionsPlugin extends Plugin {
 
     @PluginMethod()
+    public void getDeviceId(PluginCall call) {
+        String androidId = Settings.Secure.getString(
+                getContext().getContentResolver(), Settings.Secure.ANDROID_ID);
+        JSObject ret = new JSObject();
+        ret.put("identifier", androidId);
+        call.resolve(ret);
+    }
+
+    @PluginMethod()
     public void checkPermissions(PluginCall call) {
         Context context = getContext();
         JSObject ret = new JSObject();

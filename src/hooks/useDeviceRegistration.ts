@@ -22,14 +22,20 @@ export function useDeviceRegistration(userId: string | undefined, role: string |
 
     const registerDevice = async () => {
       try {
-        // Try getting device ID from the Android JS bridge
         let deviceId: string | null = null;
 
-        if (window.Android?.getDeviceId) {
-          deviceId = window.Android.getDeviceId();
+        // Try AndroidPermissionsPlugin.getDeviceId() — returns ANDROID_ID (same ID backend uses)
+        try {
+          const { registerPlugin } = await import('@capacitor/core');
+          const AndroidPermissions = registerPlugin<{ getDeviceId: () => Promise<{ identifier: string }> }>('AndroidPermissions');
+          const result = await AndroidPermissions.getDeviceId();
+          deviceId = result.identifier || null;
+          console.log('Got device ID from AndroidPermissions plugin:', deviceId);
+        } catch (e) {
+          console.warn('AndroidPermissions.getDeviceId failed:', e);
         }
 
-        // Fallback: use Capacitor Device plugin if available
+        // Fallback: use Capacitor Device plugin
         if (!deviceId) {
           try {
             const { Device } = await import('@capacitor/device');
